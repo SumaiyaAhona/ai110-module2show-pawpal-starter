@@ -7,6 +7,8 @@
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
 
+My initial UML design included four main class: Owner, Pet, Task, and Scheduler. The Owner class stores information about the use and manages multiple pets. The Pet class represents each pet and keeps track of its associated tasks. The Task class stores details such as the task name, priority, and status. The Scheduler class is responsible for oprganizing tasks, sorting them by time, and detecting scheduling clashes. This structure will separtes the responsiblities and make it easier to manage. 
+
 **b. Design changes**
 
 - Did your design change during implementation?
