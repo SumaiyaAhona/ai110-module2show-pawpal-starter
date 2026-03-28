@@ -42,6 +42,20 @@ pip install -r requirements.txt
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
 
+### System Architecture (UML)
+Here is the final UML diagram for PawPal+, showing classes, methods, and relationships:
+
+<a href="uml_final.png" target="_blank">
+  <img src="uml_final.png" title="PawPal+ UML Diagram" alt="UML Diagram" width="600" />
+</a>
+
+## 📸 Demo
+This is what the final PawPal+ app looks like in the browser:
+
+<a href="pawpal_demo.png" target="_blank">
+  <img src="pawpal_demo.png" title="PawPal+ Demo" alt="PawPal+ Demo" width="600" />
+</a>
+
 ## Smarter Scheduling
 
 The `Scheduler` class includes several methods that go beyond basic task storage:
