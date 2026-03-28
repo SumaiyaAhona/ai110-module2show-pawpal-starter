@@ -55,3 +55,24 @@ The `Scheduler` class includes several methods that go beyond basic task storage
 - **`get_conflict_pairs(pet)`** — Returns overlapping tasks as `(task_a, task_b)` tuples so you know exactly which two tasks clash. Returns an empty list if the pet has no tasks or isn't registered.
 
 The `Task` class also supports **recurring tasks** via an optional `frequency` field (`"daily"` or `"weekly"`). When a recurring task is marked completed, `update_status("completed")` automatically returns a new `Task` scheduled for the next occurrence — ready to be added back to the pet's schedule.
+
+## Testing PawPal+
+
+Run the test suite with:
+
+```bash
+pytest tests/
+```
+
+To see detailed output for each test:
+
+```bash
+pytest tests/ -v
+```
+
+The test suite covers:
+
+- **Sorting** — tasks returned in correct time order, single-pet scoping
+- **Recurring tasks** — daily/weekly offsets, non-recurring returns `None`, new task starts as `"pending"`
+- **Conflict detection** — overlapping tasks flagged, conflict pairs returned as tuples, no cross-pet false positives
+- **Edge cases** — empty pets and unregistered pets return `[]` without crashing
