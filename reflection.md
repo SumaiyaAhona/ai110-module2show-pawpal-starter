@@ -14,6 +14,8 @@ My initial UML design included four main class: Owner, Pet, Task, and Scheduler.
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
 
+Yes my design changed during implementation as I clarified how tasks were stored and managed. I replaced time as a tring witha datetime object because it didn't allow accurate time comparisons or conflict detection past exact matches. I added duration field so I could detect the overlapping. I also changed the scheduler from storing all tasks in a single list to grouping them by pet using a dictionary. This can help detect conflicts to work per pet, since different pets can have tasks simultaneously. Then I introduced a schedule_task method in Owner and lnked it with Scheduler to make sure the tasks are added in one place, avoiding inconsistencies. 
+
 ---
 
 ## 2. Scheduling Logic and Tradeoffs
