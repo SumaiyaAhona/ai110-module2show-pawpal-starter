@@ -30,6 +30,8 @@ Yes my design changed during implementation as I clarified how tasks were stored
 - Describe one tradeoff your scheduler makes.
 - Why is that tradeoff reasonable for this scenario?
 
+The scheduler only detects conflicts when task times overlaps and does not automatically reschedule tasks. This keeps the logic simple, readable, and understandable, which is sufficient for a smal personal pet care app where the owner can manually adjust conflicts.
+
 ---
 
 ## 3. AI Collaboration

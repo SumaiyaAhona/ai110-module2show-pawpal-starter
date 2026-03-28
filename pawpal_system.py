@@ -10,13 +10,18 @@ class Task:
     priority: str           # "high", "medium", "low"
     duration: int           # minutes — required for conflict detection
     status: str = "pending"
+    frequency: str = None  # "daily", "weekly", or None
 
-    def update_status(self, new_status: str) -> None:
-        """Update the task's status to a valid value."""
+    def update_status(self, new_status: str) -> "Task | None":
+        """Update the task's status; returns a new scheduled Task if recurring and completed."""
         valid = {"pending", "in-progress", "completed", "cancelled"}
         if new_status not in valid:
             raise ValueError(f"Invalid status '{new_status}'. Must be one of {valid}")
         self.status = new_status
+        if new_status == "completed" and self.frequency in ("daily", "weekly"):
+            delta = timedelta(days=1 if self.frequency == "daily" else 7)
+            return Task(self.title, self.time + delta, self.priority, self.duration, frequency=self.frequency)
+        return None
 
     def is_completed(self) -> bool:
         """Return True if the task's status is completed."""
@@ -101,10 +106,23 @@ class Scheduler:
         """Register a pet and sync its existing task list into the scheduler."""
         self.pet_tasks[pet] = pet.tasks
 
-    def sort_by_time(self) -> List[Task]:
-        """Return all tasks across all pets sorted by start time."""
-        all_tasks = [task for tasks in self.pet_tasks.values() for task in tasks]
-        return sorted(all_tasks, key=lambda t: t.time)
+    def sort_by_time(self, pet: Pet = None) -> List[Task]:
+        """Return tasks sorted by start time, optionally limited to a single pet."""
+        if pet is not None:
+            tasks = self.pet_tasks.get(pet, [])
+        else:
+            tasks = [task for tasks in self.pet_tasks.values() for task in tasks]
+        return sorted(tasks, key=lambda t: t.time)
+
+    def filter_tasks(self, pet: Pet = None, status: str = None) -> List[Task]:
+        """Return tasks matching the given pet and/or status filter."""
+        if pet is not None:
+            tasks = self.pet_tasks.get(pet, [])
+        else:
+            tasks = [task for tasks in self.pet_tasks.values() for task in tasks]
+        if status is not None:
+            tasks = [t for t in tasks if t.status == status]
+        return tasks
 
     def detect_conflicts(self, pet: Pet) -> List[Task]:
         """
@@ -121,6 +139,19 @@ class Scheduler:
                     conflicts.append(current)
                 conflicts.append(next_task)
         return conflicts
+
+    def get_conflict_pairs(self, pet: Pet) -> List[tuple]:
+        """Return a list of (task_a, task_b) tuples where the two tasks overlap for a given pet."""
+        if pet not in self.pet_tasks:
+            return []
+        tasks = sorted(self.pet_tasks[pet], key=lambda t: t.time)
+        pairs = []
+        for i in range(len(tasks) - 1):
+            current = tasks[i]
+            next_task = tasks[i + 1]
+            if current.end_time() > next_task.time:
+                pairs.append((current, next_task))
+        return pairs
 
     def print_schedule(self, pet: Pet) -> None:
         """Print a pet's schedule sorted by time, flagging conflicts."""

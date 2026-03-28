@@ -41,3 +41,17 @@ pip install -r requirements.txt
 5. Add tests to verify key behaviors.
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
+
+## Smarter Scheduling
+
+The `Scheduler` class includes several methods that go beyond basic task storage:
+
+- **`sort_by_time(pet=None)`** — Returns tasks sorted by start time. Pass a `Pet` to sort only that pet's tasks; omit it to sort across all pets.
+
+- **`filter_tasks(pet=None, status=None)`** — Filters tasks by pet, status, or both. For example, retrieve only `"pending"` tasks for a specific pet, or all `"completed"` tasks across every pet.
+
+- **`detect_conflicts(pet)`** — Returns a flat list of tasks that overlap in time for a given pet. A conflict occurs when one task starts before the previous one ends.
+
+- **`get_conflict_pairs(pet)`** — Returns overlapping tasks as `(task_a, task_b)` tuples so you know exactly which two tasks clash. Returns an empty list if the pet has no tasks or isn't registered.
+
+The `Task` class also supports **recurring tasks** via an optional `frequency` field (`"daily"` or `"weekly"`). When a recurring task is marked completed, `update_status("completed")` automatically returns a new `Task` scheduled for the next occurrence — ready to be added back to the pet's schedule.
